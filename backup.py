@@ -2,5 +2,6 @@ import os
 
 
 os.system('git add --all')
-os.system('git commit -m "{}"'.format(input('Enter comment for git commit: ')))
+comment = input('Enter comment for git commit: ')
+os.system('git commit -m "{}"'.format(comment))
 os.system('git push origin master')
