@@ -15,7 +15,30 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls import url, include
+from django.conf.urls.static import static
+
+from rest_framework import routers
+from rest_framework.authtoken import views as auth_view
+
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
+
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # url('get-auth-jwt', obtain_jwt_token),
+    # url('refresh-auth-jwt', refresh_jwt_token),
+    # url('verify-auth-jwt', verify_jwt_token),
+
+    path('', include('users.urls')),
 ]
+
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
