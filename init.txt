@@ -1,0 +1,23 @@
+
+user register
+user login
+home page - number of books, number of author
+user role - reader, writer, both
+
+
+search by author
+search by book names
+
+for reader:
+	follow book (max 11 books)
+	free
+ 		max 3 chapter of every book of every author
+ 	paid (19.47) razorpay
+ 		unlimited books
+
+
+for author:
+	submit 3-5 chapter original composition
+	paid (19.47)
+	free
+		upload books
