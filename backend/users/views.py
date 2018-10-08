@@ -1,52 +1,62 @@
 from django.contrib.auth.hashers import make_password, check_password
 from django.forms.models import model_to_dict
 from django.utils import timezone
+from django.contrib.auth.models import User
 
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from rest_framework_jwt.settings import api_settings
+from . import models,serializers
+from books import models as book_models
+from books import serializers as book_serializers
 
 
-from . import models
-
-error_codes = {
-    1: 'user exists',
-}
-
-actions = {
-    1: 'new user created',
-}
+class register(viewsets.ModelViewSet):
+    queryset = models.users.objects.all()
+    serializer_class = serializers.client_serializer
+    permission_classes = ()
 
 
-jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+class follow(viewsets.ModelViewSet):
+    queryset = models.following.objects.all()
+    serializer_class = serializers.follow_serializer
+    # TODO add permissions
+    permission_classes = ()
+
+    def create(self, request):
+        user = models.users.objects.get(user=User.objects.get(username=request.user))
+        book = book_models.books.objects.get(slug=request.data['book'])
+        follow, created = models.following.objects.get_or_create(user=user)
+        follow.books.add(book)
+        return Response([item.slug for item in model_to_dict(follow)['books']])
+
+    
+    def delete(self, request):
+        user = models.users.objects.get(user=User.objects.get(username=request.user))
+        book = book_models.books.objects.get(slug=request.data['book'])
+        follow, created = models.following.objects.get_or_create(user=user)
+        follow.books.remove(book)
+        return Response([item.slug for item in model_to_dict(follow)['books']])
 
 
-class register(APIView):
-    authentication_classes = []
-    permission_classes = []
 
-    def post(self, request):
-        data = request.data
 
-        user, created = models.users.objects.get_or_create(
-            username = data['username'],
-        )
+class read(viewsets.ModelViewSet):
+    http_method_names = ['get','post']
+    queryset = models.read.objects.all()
+    serializer_class = serializers.read_serializer
+    # TODO add permissions
+    permission_classes = ()
 
-        if created:
-            user.email = data['email']
-            user.is_reader = data['reader']
-            user.is_author = data['author']
-            user.is_paid = data['paid']
-            user.password = make_password(data['password'])
-            user.save()
-            msg = actions[1]
-        else:
-            msg = error_codes[1]
-        
-        payload = jwt_payload_handler(user)
-        token = jwt_encode_handler(payload)
-
-        return Response({'msg':msg, 'token': token})
-
+    def create(self, request):
+        user = models.users.objects.get(user=User.objects.get(username=request.user))
+        book = book_models.books.objects.get(slug=request.data['book'])
+        chapter = book_models.chapters.objects.get(book=book, chapter=request.data['chapter'])
+        user_read, created = models.read.objects.get_or_create(user=user, book=book)
+        user_read.chapter.add(chapter)
+        data = {}
+        data['book'] = book_serializers.book_serializer(book, context={'request':request}).data
+        data['chapters'] = [item.chapter for item in model_to_dict(user_read)['chapter']]
+        return Response(data)

@@ -1,40 +1,28 @@
 from django.db import models
+from django.contrib.auth.models import User
+
+
+
+from books import models as book_model
 
 
 max_len = 255
 
 class users(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(blank=True, null=True)
-    username = models.CharField(max_length=max_len, unique=True)
-    password = models.CharField(max_length=300)
-    email = models.EmailField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     is_reader = models.BooleanField(default=False)
     is_author = models.BooleanField(default=False)
     is_paid = models.BooleanField(default=False)
+    
 
     def __str__(self):
-        return self.username
+        return self.user.username
 
-
-
-
-class books(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(blank=True, null=True)
-    name = models.CharField(max_length=max_len)
-    slug = models.SlugField(unique=True)
-    author = models.ForeignKey(users, on_delete=models.CASCADE)
-
-
-
-
-
-class chapters(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(blank=True, null=True)
-    book = models.ForeignKey(books, on_delete=models.CASCADE)
-    chapter = models.IntegerField(unique=True)
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
 
 
 
@@ -42,14 +30,34 @@ class chapters(models.Model):
 
 class following(models.Model):
     user = models.ForeignKey(users, on_delete=models.CASCADE)
-    following = models.ManyToManyField(books)
+    books = models.ManyToManyField(book_model.books, blank=True)
+
+    class Meta:
+        verbose_name = 'Books Following'
+        verbose_name_plural = 'Books Following'
+    
+
 
 
 
 
 class read(models.Model):
     user = models.ForeignKey(users, on_delete=models.CASCADE)
-    book = models.ForeignKey(books, on_delete=models.CASCADE)
-    chapter = models.ManyToManyField(chapters)
+    book = models.ForeignKey(book_model.books, on_delete=models.CASCADE)
+    chapter = models.ManyToManyField(book_model.chapters)
+
+    class Meta:
+        verbose_name = 'Books Read'
+        verbose_name_plural = 'Books Read'
 
 
+
+
+
+class author(models.Model):
+    user = models.ForeignKey(users, on_delete=models.CASCADE)
+    book = models.ManyToManyField(book_model.books)
+
+    class Meta:
+        verbose_name = 'Books Written'
+        verbose_name_plural = 'Books Written'
