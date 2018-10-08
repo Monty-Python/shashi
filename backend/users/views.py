@@ -32,13 +32,13 @@ class register(APIView):
 
         user, created = models.users.objects.get_or_create(
             username = data['username'],
-            email = data['email'],
-            is_reader = data['reader'],
-            is_author = data['author'],
-            is_paid = data['paid']
         )
 
         if created:
+            user.email = data['email']
+            user.is_reader = data['reader']
+            user.is_author = data['author']
+            user.is_paid = data['paid']
             user.password = make_password(data['password'])
             user.save()
             msg = actions[1]
@@ -49,3 +49,4 @@ class register(APIView):
         token = jwt_encode_handler(payload)
 
         return Response({'msg':msg, 'token': token})
+

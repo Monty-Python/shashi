@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -14,10 +15,14 @@ import { HomeComponent } from './home/home.component';
 // providers
 import { AuthenticationService } from './services/auth/authentication.service';
 import { ServicesService } from './services/common/services.service';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
 ];
 
 
@@ -26,9 +31,12 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
+    LoginComponent,
+    RegisterComponent,
   ],
   imports: [
     HttpModule,
+    FormsModule,
     HttpClientModule,
     BrowserModule,
     RouterModule.forRoot(appRoutes),

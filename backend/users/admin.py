@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from . import models
+
+admin.site.register(models.users)
+admin.site.register(models.books)
+admin.site.register(models.chapters)
+admin.site.register(models.following)
+admin.site.register(models.read)

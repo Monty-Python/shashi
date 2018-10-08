@@ -13,6 +13,9 @@ class users(models.Model):
     is_author = models.BooleanField(default=False)
     is_paid = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.username
+
 
 
 
