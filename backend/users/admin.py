@@ -15,6 +15,8 @@ class inlineRead(admin.TabularInline):
 class UserAdmin(admin.ModelAdmin):
     inlines = [inlineFollowing, inlineRead]
 
+
+
 admin.site.register(models.users, UserAdmin)
 admin.site.register(models.following)
 admin.site.register(models.read)

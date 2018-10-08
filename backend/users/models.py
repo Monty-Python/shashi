@@ -49,6 +49,9 @@ class read(models.Model):
     class Meta:
         verbose_name = 'Books Read'
         verbose_name_plural = 'Books Read'
+  
+    def __str__(self):
+        return '{} {}'.format(self.user.user.username, self.book.slug)
 
 
 

@@ -30,7 +30,7 @@ export class ServicesService {
   }
 
 
-  server = 'http://127.0.0.1:8000/'
+  server = 'http://localhost:8000/'
   header = { headers: { Authorization: `Bearer ${this.auth.getToken()}` } };
 
   public get(url: any) {
@@ -53,12 +53,14 @@ export class ServicesService {
 
 
   public post(url, arg: any) {
+    console.log(this.header);
     return this.http.post(this.server + url, arg, this.header).pipe(
       map((data) => {
         return data;
       }),
       catchError(this.handleError));
   }
+
 
 
   public delete(url: any) {

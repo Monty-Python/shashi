@@ -9,12 +9,10 @@ import {ServicesService} from '../services/common/services.service';
 export class RegisterComponent implements OnInit {
 
   user = {
-    username: '',
-    password: '',
-    email: '',
-    reader: '',
-    author: '',
-    paid: ''
+    user: {username: 'test1', email: 'tst@email.com', password: '123'},
+    is_reader: false,
+    is_author: false,
+    is_paid: false
   }
 
   constructor(
